@@ -175,6 +175,12 @@ export class DemoStore implements Store {
     return { ...u }
   }
 
+  async changeOwnPassword(password: string): Promise<AppUser> {
+    if (!this.user) throw new Error('Not signed in')
+    await this.setPassword(this.user.id, password)
+    return this.user
+  }
+
   async setPassword(userId: string, password: string) {
     if (password.length < 8) throw new Error('Password must be at least 8 characters.')
     const pw = await this.passwords()

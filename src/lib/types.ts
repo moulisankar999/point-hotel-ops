@@ -15,6 +15,8 @@ export interface AppUser {
   role: Role
   active: boolean
   createdAt: string
+  /** set on new / reset logins; the app forces a new password before anything else */
+  mustChangePassword?: boolean
 }
 
 export interface Settings {
@@ -24,6 +26,8 @@ export interface Settings {
   timezone: string
   checkInTime: string
   checkOutTime: string
+  /** true until the CEO confirms the seeded rooms / room types match the real hotel */
+  roomsPlaceholder?: boolean
 }
 
 export interface RoomType {

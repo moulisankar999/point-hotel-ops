@@ -61,18 +61,18 @@ npm run build
   - alert triggers and the realtime publication
 - `supabase/functions/admin-users`: CEO-only edge function to create, disable and enable staff logins and to reset passwords.
 
-## Going live on Supabase (not done yet)
-1. Create a **new, dedicated** Supabase project (region: Singapore), once the cost is approved. Do not reuse any other project.
-2. Apply the migration: `supabase link --project-ref <ref>`, then `supabase db push`. You can also paste the SQL into the SQL editor.
-   The migration has not been run against a database yet, so review it and test it on a branch or staging project first.
-3. Deploy the edge function: `supabase functions deploy admin-users`.
-4. Create the first CEO login:
-   - Go to Auth → Users → Add user, with email `mouli@staff.thepoint.internal`, a strong password, and auto-confirm turned on.
-   - Then run in the SQL editor:
-     `insert into profiles (id, username, full_name, role) values ('<auth user id>', 'mouli', 'Mouli Sankar', 'ceo');`
-5. In Auth settings, turn off public sign-ups.
-6. Build with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` set (repo secrets for the Pages build), then redeploy.
-7. Sign in as CEO and complete the setup:
-   - Fix rooms and room types in **Settings** to match the real hotel.
+## Live setup (done 2026-11-05)
+- Supabase project `gqufebtfyrofycnnbnpm` (point-hotel-ops, Singapore / ap-southeast-1): https://gqufebtfyrofycnnbnpm.supabase.co
+- Migrations applied: `20261105000000_point_hotel_ops_init.sql` and `20261105000100_hardening.sql` (advisor fixes).
+- Edge function `admin-users` is deployed with JWT verification on.
+- The CEO login `mouli` was created with a temporary password. The app makes the user pick a new password at first sign-in (`profiles.must_change_password`). New logins and CEO password resets set the same flag again.
+- Pages builds use the repo secrets `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+
+### Still to do by hand
+1. Supabase dashboard → Authentication → Sign In / Providers: turn off **Allow new users to sign up**. Self sign-ups are already harmless because a login without a staff profile can read nothing, but they should still be switched off.
+2. Sign in as CEO:
+   - Change the placeholder rooms and room types in **Settings** to match the real hotel, then press **Rooms are correct** on the banner.
    - Enter the fixed monthly costs in **Expenses**.
    - Create staff logins in **Users**.
+
+New migrations go in `supabase/migrations/`. Apply them with `supabase db push`, or with the Supabase MCP / SQL editor.

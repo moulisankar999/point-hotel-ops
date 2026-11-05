@@ -162,8 +162,18 @@ export class SupabaseStore implements Store {
     if (error || data?.error) throw new Error(data?.error ?? error?.message ?? 'Could not set password')
   }
 
+  async changeOwnPassword(password: string) {
+    if (password.length < 10) throw new Error('Use at least 10 characters.')
+    const { data, error } = await this.sb.auth.updateUser({ password })
+    if (error || !data.user) throw new Error(error?.message ?? 'Could not change password')
+    const { error: e2 } = await this.sb.rpc('password_changed')
+    if (e2) throw new Error(e2.message)
+    this.user = await this.profile(data.user.id)
+    return this.user
+  }
+
   async saveSettings(s: Settings) {
-    const { error } = await this.sb.from('settings').update({ hotel_name: s.hotelName, city: s.city, currency: s.currency, timezone: s.timezone, check_in_time: s.checkInTime, check_out_time: s.checkOutTime, change_reason: null }).eq('id', 1)
+    const { error } = await this.sb.from('settings').update({ hotel_name: s.hotelName, city: s.city, currency: s.currency, timezone: s.timezone, check_in_time: s.checkInTime, check_out_time: s.checkOutTime, ...(s.roomsPlaceholder !== undefined ? { rooms_placeholder: s.roomsPlaceholder } : {}), change_reason: s.roomsPlaceholder === false ? 'CEO confirmed rooms and room types' : null }).eq('id', 1)
     if (error) throw new Error(friendly(error.message))
   }
 }

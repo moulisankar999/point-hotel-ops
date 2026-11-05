@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { useApp } from './state/AppContext'
 import { Layout } from './components/Layout'
 import { Login } from './pages/Login'
+import { ChangePassword } from './pages/ChangePassword'
 import { Dashboard } from './pages/Dashboard'
 import { Rooms } from './pages/Rooms'
 import { Bookings } from './pages/Bookings'
@@ -20,6 +21,7 @@ export default function App() {
   const { ready, user, db } = useApp()
   if (!ready) return <div className="grid min-h-screen place-items-center text-slate-400"><div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-600 border-t-transparent" /></div>
   if (!user || !db) return <Login />
+  if (user.mustChangePassword) return <ChangePassword />
   const home = can(user.role, 'dashboard') ? '/' : '/housekeeping'
   const G = ({ p, children }: { p: Perm; children: ReactNode }) => (can(user.role, p) ? <>{children}</> : <Navigate to={home} replace />)
   return (

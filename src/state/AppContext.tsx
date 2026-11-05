@@ -17,6 +17,7 @@ interface Ctx {
   refresh: () => Promise<void>
   signIn: (u: string, p: string) => Promise<void>
   signOut: () => Promise<void>
+  changeOwnPassword: (p: string) => Promise<void>
   toasts: Toast[]
   toast: (t: Omit<Toast, 'id'>) => void
   dismiss: (id: number) => void
@@ -55,7 +56,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     seenAlerts.current = new Set(next.alerts.map((a) => a.id))
     if (u) {
       const me = next.users.find((x) => x.id === u.id)
-      if (me && (me.role !== u.role || me.active !== u.active || me.fullName !== u.fullName)) setUser(me.active ? me : null)
+      if (me && (me.role !== u.role || me.active !== u.active || me.fullName !== u.fullName || me.mustChangePassword !== u.mustChangePassword)) setUser(me.active ? me : null)
     }
     setDb(next)
   }, [toast])
@@ -117,6 +118,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     seenAlerts.current = null
   }, [])
 
+  const changeOwnPassword = useCallback(async (p: string) => {
+    const usr = await store.changeOwnPassword(p)
+    userRef.current = usr
+    setUser(usr)
+    await refresh()
+  }, [refresh])
+
   const toggleTheme = useCallback(() => {
     setTheme((t) => {
       const n = t === 'dark' ? 'light' : 'dark'
@@ -126,7 +134,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     })
   }, [])
 
-  const value = useMemo(() => ({ db, user, ready, today, ops, run, refresh, signIn, signOut, toasts, toast, dismiss, theme, toggleTheme }), [db, user, ready, today, ops, run, refresh, signIn, signOut, toasts, toast, dismiss, theme, toggleTheme])
+  const value = useMemo(() => ({ db, user, ready, today, ops, run, refresh, signIn, signOut, changeOwnPassword, toasts, toast, dismiss, theme, toggleTheme }), [db, user, ready, today, ops, run, refresh, signIn, signOut, changeOwnPassword, toasts, toast, dismiss, theme, toggleTheme])
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>
 }
 

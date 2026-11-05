@@ -36,6 +36,8 @@ export interface Store {
   createUser(input: NewUserInput): Promise<AppUser>
   updateUser(id: string, patch: Partial<Pick<AppUser, 'fullName' | 'role' | 'active'>>, reason?: string | null): Promise<AppUser>
   setPassword(userId: string, password: string): Promise<void>
+  /** the signed-in user replaces their own (temporary) password */
+  changeOwnPassword(password: string): Promise<AppUser>
   saveSettings(s: Settings): Promise<void>
   resetDemo?(): Promise<void>
 }

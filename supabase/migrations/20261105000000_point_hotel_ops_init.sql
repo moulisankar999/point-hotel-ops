@@ -1,7 +1,7 @@
 -- =====================================================================
 -- The Point Boutique Hotel · Hotel Ops · initial schema
 -- Target: a NEW, dedicated Supabase project (Postgres 15+).
--- STATUS: written for review — NOT yet applied to any database.
+-- STATUS: applied to Supabase project gqufebtfyrofycnnbnpm (point-hotel-ops) on 2026-11-05.
 --
 -- Principles
 --  * Every write is recorded in an append-only audit_log (DB triggers,
@@ -35,6 +35,7 @@ create table public.profiles (
   full_name     text not null check (length(btrim(full_name)) > 0),
   role          app_role not null,
   active        boolean not null default true,
+  must_change_password boolean not null default true,
   created_at    timestamptz not null default now(),
   change_reason text
 );
@@ -47,6 +48,8 @@ create table public.settings (
   timezone       text not null default 'Asia/Kuala_Lumpur',
   check_in_time  text not null default '15:00',
   check_out_time text not null default '12:00',
+  -- true until the CEO confirms the seeded rooms / room types match the real hotel
+  rooms_placeholder boolean not null default true,
   change_reason  text
 );
 
@@ -531,6 +534,15 @@ begin
   insert into public.audit_log (user_id, user_name, entity, entity_id, action)
   values (auth.uid(), public.staff_name(auth.uid()), 'session', auth.uid()::text, p_action);
 end $$;
+
+-- called by the app right after the user sets a new password
+create or replace function public.password_changed() returns void
+language sql security definer set search_path = public as $$
+  update public.profiles set must_change_password = false, change_reason = 'Password changed by user'
+  where id = auth.uid() and must_change_password;
+$$;
+revoke all on function public.password_changed() from public, anon;
+grant execute on function public.password_changed() to authenticated;
 
 revoke all on function public.mark_alerts_read(uuid[]) from public, anon;
 revoke all on function public.log_session(text) from public, anon;

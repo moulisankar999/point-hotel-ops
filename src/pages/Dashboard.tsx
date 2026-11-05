@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { BedDouble, CalendarPlus, DoorOpen, Footprints, Ghost, LogOut, Percent, SprayCan, TrendingUp, TriangleAlert, Wallet, Wrench } from 'lucide-react'
 import { useData } from '../state/AppContext'
+import { PlaceholderBanner } from '../components/PlaceholderBanner'
 import { Card, Empty, PageHeader, Stat, Badge } from '../components/ui'
 import { Bars, Meter } from '../components/Charts'
 import { BookingForm } from '../components/BookingForm'
@@ -49,6 +50,7 @@ export function Dashboard() {
           <button className="btn-secondary" onClick={() => setForm('advance')}><CalendarPlus size={16} />Advance booking</button>
         </>}
       />
+      <PlaceholderBanner />
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <div className="card col-span-2 p-5 md:row-span-2">

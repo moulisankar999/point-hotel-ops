@@ -5,6 +5,7 @@ import { store, isDemo } from '../data'
 import { Card, Field, Modal, PageHeader } from '../components/ui'
 import type { Room, RoomType, Settings as S } from '../lib/types'
 import { rm } from '../lib/format'
+import { PlaceholderBanner } from '../components/PlaceholderBanner'
 
 export function Settings() {
   const { db, run, toast, refresh } = useData()
@@ -16,6 +17,7 @@ export function Settings() {
   return (
     <div>
       <PageHeader title="Settings" subtitle="Hotel details, room types, rates and rooms" />
+      <PlaceholderBanner onSettings />
       <div className="grid gap-4 lg:grid-cols-2">
         <Card title="Hotel" action={<button className="btn-primary btn-sm" onClick={async () => { try { await store.saveSettings(s); await refresh(); toast({ title: 'Settings saved', tone: 'success' }) } catch (e) { toast({ title: String((e as Error).message), tone: 'error' }) } }}><Save size={14} />Save</button>}>
           <div className="grid gap-3 sm:grid-cols-2">

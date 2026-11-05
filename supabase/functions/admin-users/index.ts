@@ -40,10 +40,10 @@ Deno.serve(async (req) => {
         if (!ROLES.includes(body.role)) return json({ error: 'Unknown role' }, 400)
         if (String(body.password ?? '').length < 8) return json({ error: 'Password must be at least 8 characters' }, 400)
         if (!String(body.fullName ?? '').trim()) return json({ error: 'Full name is required' }, 400)
-        const { data: created, error } = await admin.auth.admin.createUser({ email: body.email, password: body.password, email_confirm: true, user_metadata: { username } })
+        const { data: created, error } = await admin.auth.admin.createUser({ email: `${username}@staff.thepoint.internal`, password: body.password, email_confirm: true, user_metadata: { username } })
         if (error || !created.user) return json({ error: error?.message ?? 'Could not create login' }, 400)
         const { data: profile, error: pErr } = await admin.from('profiles')
-          .insert({ id: created.user.id, username, full_name: String(body.fullName).trim(), role: body.role, change_reason: `Created by ${me.full_name}` })
+          .insert({ id: created.user.id, username, full_name: String(body.fullName).trim(), role: body.role, must_change_password: true, change_reason: `Created by ${me.full_name}` })
           .select().single()
         if (pErr) {
           await admin.auth.admin.updateUserById(created.user.id, { ban_duration: '876000h' }) // never delete; disable the orphan login
@@ -56,7 +56,6 @@ Deno.serve(async (req) => {
         if (body.userId === me.id) return json({ error: 'You cannot disable your own login.' }, 400)
         const { error } = await admin.auth.admin.updateUserById(body.userId, { ban_duration: body.action === 'ban' ? '876000h' : 'none' })
         if (error) return json({ error: error.message }, 400)
-        if (body.action === 'ban') await admin.auth.admin.signOut(body.userId).catch(() => undefined)
         await audit(body.userId, body.action, { banned: body.action === 'ban' })
         return json({ ok: true })
       }
@@ -64,6 +63,8 @@ Deno.serve(async (req) => {
         if (String(body.password ?? '').length < 8) return json({ error: 'Password must be at least 8 characters' }, 400)
         const { error } = await admin.auth.admin.updateUserById(body.userId, { password: body.password })
         if (error) return json({ error: error.message }, 400)
+        // temporary password: the user must choose their own at next sign-in
+        await admin.from('profiles').update({ must_change_password: true, change_reason: `Password reset by ${me.full_name}` }).eq('id', body.userId)
         await audit(body.userId, 'set_password', { passwordChanged: true }) // never log the password itself
         return json({ ok: true })
       }

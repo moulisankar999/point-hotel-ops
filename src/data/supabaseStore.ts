@@ -173,7 +173,7 @@ export class SupabaseStore implements Store {
   }
 
   async saveSettings(s: Settings) {
-    const { error } = await this.sb.from('settings').update({ hotel_name: s.hotelName, city: s.city, currency: s.currency, timezone: s.timezone, check_in_time: s.checkInTime, check_out_time: s.checkOutTime, ...(s.roomsPlaceholder !== undefined ? { rooms_placeholder: s.roomsPlaceholder } : {}), change_reason: s.roomsPlaceholder === false ? 'CEO confirmed rooms and room types' : null }).eq('id', 1)
+    const { error } = await this.sb.from('settings').update({ hotel_name: s.hotelName, city: s.city, currency: s.currency, timezone: s.timezone, check_in_time: s.checkInTime, check_out_time: s.checkOutTime, address: s.address ?? null, phone: s.phone ?? null, email: s.email ?? null, website: s.website ?? null, star_rating: s.starRating ?? null, ...(s.roomsPlaceholder !== undefined ? { rooms_placeholder: s.roomsPlaceholder } : {}), change_reason: s.roomsPlaceholder === false ? 'CEO confirmed rooms and room types' : null }).eq('id', 1)
     if (error) throw new Error(friendly(error.message))
   }
 }

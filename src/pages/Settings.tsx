@@ -22,6 +22,11 @@ export function Settings() {
         <Card title="Hotel" action={<button className="btn-primary btn-sm" onClick={async () => { try { await store.saveSettings(s); await refresh(); toast({ title: 'Settings saved', tone: 'success' }) } catch (e) { toast({ title: String((e as Error).message), tone: 'error' }) } }}><Save size={14} />Save</button>}>
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Hotel name" className="sm:col-span-2"><input className="input" value={s.hotelName} onChange={(e) => setS({ ...s, hotelName: e.target.value })} /></Field>
+            <Field label="Address" className="sm:col-span-2"><textarea className="input" rows={2} value={s.address ?? ''} onChange={(e) => setS({ ...s, address: e.target.value })} /></Field>
+            <Field label="Phone"><input className="input" value={s.phone ?? ''} onChange={(e) => setS({ ...s, phone: e.target.value })} /></Field>
+            <Field label="Email"><input type="email" className="input" value={s.email ?? ''} onChange={(e) => setS({ ...s, email: e.target.value })} /></Field>
+            <Field label="Website" className="sm:col-span-2"><input className="input" value={s.website ?? ''} onChange={(e) => setS({ ...s, website: e.target.value })} /></Field>
+            <Field label="Star rating"><select className="input" value={s.starRating ?? ''} onChange={(e) => setS({ ...s, starRating: e.target.value ? Number(e.target.value) : null })}><option value="">–</option>{[1, 2, 3, 4, 5].map((n) => <option key={n} value={n}>{n} star{n > 1 ? 's' : ''}</option>)}</select></Field>
             <Field label="City"><input className="input" value={s.city} onChange={(e) => setS({ ...s, city: e.target.value })} /></Field>
             <Field label="Currency"><input className="input" value={s.currency} disabled /></Field>
             <Field label="Check-in time"><input type="time" className="input" value={s.checkInTime} onChange={(e) => setS({ ...s, checkInTime: e.target.value })} /></Field>
@@ -34,14 +39,14 @@ export function Settings() {
             <thead><tr><th className="th">Type</th><th className="th text-right">Rate</th><th className="th text-right">Floor</th><th className="th text-right">Pax</th><th className="th text-right">Rooms</th></tr></thead>
             <tbody>{db.roomTypes.map((t) => (
               <tr key={t.id} className="cursor-pointer hover:bg-black/[0.02] dark:hover:bg-white/[0.03]" onClick={() => setRt({ t, isNew: false })}>
-                <td className="td"><b>{t.code}</b> · {t.name}</td><td className="td text-right">{rm(t.baseRate, 0)}</td><td className="td text-right">{rm(t.rateFloor, 0)}</td><td className="td text-right">{t.maxPax}</td><td className="td text-right">{activeRooms.filter((r) => r.typeId === t.id).length}</td>
+                <td className="td"><b>{t.code}</b> · {t.name}</td><td className="td text-right">{rm(t.baseRate)}</td><td className="td text-right">{rm(t.rateFloor)}</td><td className="td text-right">{t.maxPax}</td><td className="td text-right">{activeRooms.filter((r) => r.typeId === t.id).length}</td>
               </tr>))}
             </tbody>
           </table>
           <p className="mt-2 text-xs text-slate-500">Selling below the floor requires a reason and is flagged to management.</p>
         </Card>
       </div>
-      <Card className="mt-4" title={`Rooms · ${activeRooms.length} active (50–100)`} action={<button className="btn-secondary btn-sm" disabled={activeRooms.length >= 100} onClick={() => setRoom({ r: { id: '', number: '', floor: 1, typeId: db.roomTypes[0]?.id ?? '', active: true }, isNew: true })}><Plus size={14} />Add room</button>}>
+      <Card className="mt-4" title={`Rooms · ${activeRooms.length} in use · ${db.rooms.length - activeRooms.length} retired`} action={<button className="btn-secondary btn-sm" disabled={activeRooms.length >= 100} onClick={() => setRoom({ r: { id: '', number: '', floor: 1, typeId: db.roomTypes[0]?.id ?? '', active: true }, isNew: true })}><Plus size={14} />Add room</button>}>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-6 lg:grid-cols-10">
           {db.rooms.map((r) => (
             <button key={r.id} onClick={() => setRoom({ r, isNew: false })} className={`rounded-xl border px-2 py-2 text-left text-sm ${r.active ? 'border-black/10 hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5' : 'border-dashed border-black/10 opacity-50'}`}>
@@ -62,8 +67,8 @@ export function Settings() {
         {rt && <div className="grid gap-3 sm:grid-cols-2">
           <Field label="Code"><input className="input" value={rt.t.code} onChange={(e) => setRt({ ...rt, t: { ...rt.t, code: e.target.value.toUpperCase() } })} /></Field>
           <Field label="Name"><input className="input" value={rt.t.name} onChange={(e) => setRt({ ...rt, t: { ...rt.t, name: e.target.value } })} /></Field>
-          <Field label="Rack rate (RM)"><input type="number" className="input" value={rt.t.baseRate} onChange={(e) => setRt({ ...rt, t: { ...rt.t, baseRate: Number(e.target.value) } })} /></Field>
-          <Field label="Rate floor (RM)"><input type="number" className="input" value={rt.t.rateFloor} onChange={(e) => setRt({ ...rt, t: { ...rt.t, rateFloor: Number(e.target.value) } })} /></Field>
+          <Field label="Rack rate (RM)"><input type="number" step="0.01" className="input" value={rt.t.baseRate} onChange={(e) => setRt({ ...rt, t: { ...rt.t, baseRate: Number(e.target.value) } })} /></Field>
+          <Field label="Rate floor (RM)"><input type="number" step="0.01" className="input" value={rt.t.rateFloor} onChange={(e) => setRt({ ...rt, t: { ...rt.t, rateFloor: Number(e.target.value) } })} /></Field>
           <Field label="Max guests"><input type="number" className="input" value={rt.t.maxPax} onChange={(e) => setRt({ ...rt, t: { ...rt.t, maxPax: Number(e.target.value) } })} /></Field>
         </div>}
       </Modal>

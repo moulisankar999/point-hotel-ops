@@ -26,6 +26,11 @@ export interface Settings {
   timezone: string
   checkInTime: string
   checkOutTime: string
+  address?: string | null
+  phone?: string | null
+  email?: string | null
+  website?: string | null
+  starRating?: number | null
   /** true until the CEO confirms the seeded rooms / room types match the real hotel */
   roomsPlaceholder?: boolean
 }

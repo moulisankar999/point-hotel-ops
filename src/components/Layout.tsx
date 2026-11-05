@@ -7,6 +7,8 @@ import { ROLE_LABEL } from '../lib/types'
 import { cls } from '../lib/format'
 import { isDemo } from '../data'
 import { AlertBell } from './AlertBell'
+import { HOTEL, LOGO_MARK_URL } from '../lib/hotel'
+import { PrintHeader } from './PrintHeader'
 
 interface NavItem { to: string; label: string; icon: ReactNode; perm: Perm; mobile?: boolean }
 
@@ -44,9 +46,9 @@ export function Layout() {
 
   const brand = (
     <div className="flex items-center gap-2.5 px-2">
-      <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-sm font-black text-white shadow">TP</div>
+      <img src={LOGO_MARK_URL} alt="" className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1 shadow-sm ring-1 ring-black/5" data-testid="sidebar-logo" />
       <div className="leading-tight">
-        <div className="text-[14.5px] font-bold">The Point</div>
+        <div className="text-[14.5px] font-bold">{db.settings.hotelName || HOTEL.name}</div>
         <div className="text-[11.5px] text-slate-500 dark:text-slate-400">Hotel Ops · {db.settings.city}</div>
       </div>
     </div>
@@ -86,12 +88,14 @@ export function Layout() {
       <div className="lg:pl-64">
         <header className="no-print sticky top-0 z-20 flex h-14 items-center gap-3 border-b border-black/5 bg-[#f5f5f7]/80 px-4 backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0c0f]/80 sm:px-6">
           <button className="btn-ghost btn-sm !p-2 lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu"><Menu size={20} /></button>
+          <img src={LOGO_MARK_URL} alt="" className="h-7 w-7 object-contain lg:hidden" />
           <div className="text-[15px] font-semibold lg:hidden">{items.find((n) => (n.to === '/' ? loc.pathname === '/' : loc.pathname.startsWith(n.to)))?.label ?? 'The Point'}</div>
           <div className="flex-1" />
           {isDemo && <span className="chip bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-200">DEMO DATA</span>}
           <AlertBell />
         </header>
         <main className="print-full mx-auto max-w-[1400px] px-4 pb-28 pt-5 sm:px-6 lg:pb-10">
+          <PrintHeader />
           <Outlet />
         </main>
       </div>

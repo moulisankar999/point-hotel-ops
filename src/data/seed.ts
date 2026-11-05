@@ -1,3 +1,4 @@
+import { HOTEL } from '../lib/hotel'
 import type { AlertItem, AppUser, Booking, Db, FixedExpense, Payment, PaymentMethod, Room, RoomType, Expense, RoomBlock, AuditEntry, CashCount } from '../lib/types'
 import { addDays, todayKL } from '../lib/dates'
 import { round2 } from '../lib/format'
@@ -187,7 +188,7 @@ export function seedDemoDb(today = todayKL()): Db {
   ]
 
   return {
-    settings: { hotelName: 'The Point Boutique Hotel', city: 'Johor Bahru', currency: 'RM', timezone: 'Asia/Kuala_Lumpur', checkInTime: '15:00', checkOutTime: '12:00' },
+    settings: { hotelName: 'The Point Boutique Hotel', city: 'Johor Bahru', currency: 'RM', timezone: 'Asia/Kuala_Lumpur', checkInTime: '15:00', checkOutTime: '12:00', address: HOTEL.address, phone: HOTEL.phone, email: HOTEL.email, website: HOTEL.website, starRating: HOTEL.starRating },
     users, roomTypes, rooms, blocks, bookings, payments, alerts, hkTasks: [], fixedExpenses, expenses, cashCounts, audit,
   }
 }

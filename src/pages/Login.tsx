@@ -4,6 +4,7 @@ import { useApp } from '../state/AppContext'
 import { isDemo, store } from '../data'
 import { DEMO_PASSWORD } from '../data/seed'
 import { ROLE_LABEL, type Role } from '../lib/types'
+import { HOTEL, LOGO_URL } from '../lib/hotel'
 
 const DEMO_USERS: { username: string; role: Role }[] = [
   { username: 'mouli', role: 'ceo' },
@@ -33,9 +34,10 @@ export function Login() {
       <button className="btn-ghost btn-sm absolute right-4 top-4" onClick={toggleTheme} aria-label="Toggle theme">{theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}</button>
       <div className="relative w-full max-w-md">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-[20px] bg-gradient-to-br from-brand-500 to-brand-700 text-xl font-black text-white shadow-lg">TP</div>
-          <h1 className="text-[28px] font-bold tracking-tight">The Point Boutique Hotel</h1>
-          <p className="mt-1 text-slate-500 dark:text-slate-400">Hotel operations · Johor Bahru</p>
+          <img src={LOGO_URL} alt={`${HOTEL.name} logo`} className="mx-auto mb-4 h-24 w-auto drop-shadow-sm" data-testid="login-logo" />
+          <h1 className="text-[28px] font-bold tracking-tight">{HOTEL.name}</h1>
+          <p className="mx-auto mt-1 max-w-sm text-[13px] text-slate-500 dark:text-slate-400">{HOTEL.address}</p>
+          <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Hotel operations</p>
         </div>
         <form className="card space-y-4 p-6" onSubmit={(e) => { e.preventDefault(); submit() }}>
           <label className="block">

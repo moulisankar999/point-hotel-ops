@@ -76,3 +76,12 @@ npm run build
    - Create staff logins in **Users**.
 
 New migrations go in `supabase/migrations/`. Apply them with `supabase db push`, or with the Supabase MCP / SQL editor.
+
+## Real hotel details (loaded 2026-11-05)
+
+- Logo `public/logo.png` (154×107, from the hotel's ZUZU booking site); `logo-mark.png` / favicons are the emblem cropped from it.
+- Migration `20261105000200_hotel_details.sql` adds address, phone, email, website, star_rating to `settings`.
+- `supabase/seed_real_hotel_20261105.sql` is the one-off data load that was run: settings, 6 real room types
+  (DDW, DDN, DTW, FAM, SGW, SGN) with the lowest direct rates published for 6 Nov – 5 Dec 2026 (excl. 8% SST),
+  and the 60 placeholder rooms reassigned 20/5/5/5/5/4 = 44 in use; 16 retired (409–412, 501–512).
+- Room **numbers** are still placeholders and the placeholder banner stays on until the CEO confirms.

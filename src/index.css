@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-tap-highlight-color: transparent; }
+  body { @apply bg-[#f5f5f7] text-slate-900 antialiased dark:bg-[#0b0c0f] dark:text-slate-100; }
+  input, select, textarea { @apply text-[15px]; }
+}
+
+@layer components {
+  .card { @apply rounded-2xl border border-black/[0.06] bg-white shadow-soft dark:border-white/[0.08] dark:bg-[#16181d]; }
+  .input { @apply w-full rounded-xl border border-black/10 bg-white px-3 py-2.5 outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15 disabled:opacity-60 dark:border-white/10 dark:bg-[#0f1115]; }
+  .label { @apply mb-1.5 block text-[13px] font-medium text-slate-600 dark:text-slate-300; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition active:scale-[.98] disabled:pointer-events-none disabled:opacity-50; }
+  .btn-primary { @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700; }
+  .btn-secondary { @apply btn border border-black/10 bg-white text-slate-800 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:hover:bg-white/10; }
+  .btn-ghost { @apply btn text-slate-600 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/10; }
+  .btn-danger { @apply btn bg-rose-600 text-white hover:bg-rose-700; }
+  .btn-sm { @apply px-3 py-1.5 text-[13px] rounded-lg; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11.5px] font-semibold; }
+  .pill { @apply inline-flex items-center gap-1.5 rounded-full border border-black/10 bg-white px-3 py-1.5 text-[13px] font-medium text-slate-600 transition hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/5 dark:text-slate-300; }
+  .pill-active { @apply border-brand-600 bg-brand-600 text-white hover:bg-brand-600 dark:border-brand-500 dark:bg-brand-500 dark:text-white; }
+  .th { @apply px-3 py-2.5 text-left text-[12px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400; }
+  .td { @apply px-3 py-2.5 text-sm; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white !important; color: black !important; }
+  .card { box-shadow: none !important; border-color: #ddd !important; break-inside: avoid; }
+  .print-full { margin: 0 !important; padding: 0 !important; max-width: none !important; }
+  html.dark body { background: white !important; }
+  @page { size: A4; margin: 12mm; }
+}
+
+.scrollbar-thin::-webkit-scrollbar { height: 8px; width: 8px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(120,120,130,.35); border-radius: 8px; }
+
+.bg-stripes { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.18) 0 6px, transparent 6px 12px); }
